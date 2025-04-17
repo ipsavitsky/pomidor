@@ -1,0 +1,6 @@
+name "pomidor"
+description "pomodoro timer"
+authors "Ilya Savitsky"
+copyright "Copyright © 2025, Ilya Savitsky"
+license "MIT"
+dependency "ncurses" version="~>1.0.0"

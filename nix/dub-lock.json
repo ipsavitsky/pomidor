@@ -1,0 +1,8 @@
+{
+  "dependencies": {
+    "ncurses": {
+      "version": "1.0.0",
+      "sha256": "0ivl88vp2dy9rpv6x3f9jlyqa7aps2x1kkyx80w2d4vcs31pzmb2"
+    }
+  }
+}
