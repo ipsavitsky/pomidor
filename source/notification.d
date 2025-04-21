@@ -10,7 +10,6 @@ void send_notification(TOMLValue ntfy_conf, string notif_text)
     "X-Title": "Pomidor",
     "X-Priority": "5"
   ]);
-  auto resp = rq.post(format("%s/%s", ntfy_conf["url"].str(),
-      ntfy_conf["topic"].str()), notif_text);
-  // check that resp contains code 200
+  rq.post(format("%s/%s", ntfy_conf["url"].str(), ntfy_conf["topic"].str()), notif_text);
+  // check that response contains code 200
 }

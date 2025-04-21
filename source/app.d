@@ -3,12 +3,13 @@ import std.file;
 import std.string;
 import std.format;
 import std.concurrency;
+import std.process;
 import requests;
 import deimos.ncurses;
 import core.thread;
+import core.stdc.stdlib;
 import std.conv;
 import toml;
-import input;
 import notification;
 
 const int working_period = 25;
@@ -56,11 +57,46 @@ string message(CountdownMode currentMode)
 }
 
 class App {
-  this()
+private:
+  CountdownMode mode;
+  TOMLDocument config;
+
+public:
+  this(TOMLDocument conf)
   {
     mode = CountdownMode.Working;
+    config = conf;
+    initscr();
+    cbreak();
+    noecho();
+    timeout(0);
+    keypad(stdscr, 1);
   }
 
+  ~this()
+  {
+    endwin();
+  }
+
+  void run()
+  {
+    outer: while (true) {
+      foreach (a; screen_generator(second_period(mode))) {
+        writeln("input...");
+        immutable int ch = getch();
+        if (ch == 'q') {
+          break outer;
+        }
+        refresh();
+      }
+      if (config["ntfy"] != null) {
+        send_notification(config["ntfy"], message(mode));
+      }
+      next();
+    }
+  }
+
+private:
   void next()
   {
     mode = next_mode(mode);
@@ -68,37 +104,45 @@ class App {
 
   void draw_screen(int secondsLeft)
   {
-    auto status_string = format("Please wait %dm%02ds seconds until this is over...",
+    auto status_string = format("Please wait %dm%02ds seconds until this is over...\n",
         secondsLeft / 60, secondsLeft % 60);
     printw(toStringz(status_string));
+    printw(toStringz("Press q to quit"));
   }
 
-private:
-  CountdownMode mode;
+  Generator!int screen_generator(int seconds)
+  {
+    return new Generator!int({
+      foreach_reverse (n; 0 .. seconds) {
+        clear();
+        draw_screen(n);
+        yield(1);
+        Thread.sleep(dur!("seconds")(1));
+      }
+    });
+  }
 }
 
 void main()
 {
-  auto config = parseTOML(cast(string) read("./config.toml"));
-  initscr();
-
-  scope (exit)
-    endwin();
-
-  App state = new App();
-
-  spawn(&input.handleInput);
-
-  while (true) {
-    foreach_reverse (n; 0 .. second_period(state.mode)) {
-      clear();
-      state.draw_screen(n);
-      refresh();
-      Thread.sleep(dur!("seconds")(1));
+  TOMLDocument config;
+  try {
+    auto config_home = environment.get("XDG_CONFIG_HOME");
+    if (config_home is null) {
+      writeln("no xdg config home set");
+      return;
     }
-
-    notification.send_notification(config["ntfy"], message(state.mode));
-
-    state.next();
+    config = parseTOML(cast(string) read(format("%s/pomidor/config.toml", config_home)));
+  } catch (std.file.FileException) {
+    writeln("Could not find config file");
+    return;
   }
+
+  App state = new App(config);
+
+  state.run();
+
+  // I have to clean up explicitly??
+  destroy(state);
+  return;
 }
