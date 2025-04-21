@@ -1,13 +1,26 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
+    dlang-tools.url = "github:ipsavitsky/dlang-tools";
+    treefmt-nix = {
+      url = "github:numtide/treefmt-nix";
+      inputs.nixpkgs.follows = "nixpkgs";
+    };
   };
 
-  outputs = { self, nixpkgs }:
+  outputs =
+    {
+      self,
+      nixpkgs,
+      dlang-tools,
+      treefmt-nix,
+    }:
     let
       pkgs = import nixpkgs { system = "x86_64-linux"; };
+      treefmtModule = treefmt-nix.lib.evalModule pkgs ./nix/treefmt.nix;
     in
     {
+      formatter.x86_64-linux = treefmtModule.config.build.wrapper;
       packages.x86_64-linux = rec {
         default = pomidor;
         pomidor = pkgs.buildDubPackage {
@@ -32,8 +45,12 @@
             ncurses
             dmd
             dub
+            fd
+            serve-d
+            dlang-tools.packages.x86_64-linux.dscanner
+            dlang-tools.packages.x86_64-linux.dfmt
           ];
         };
       };
-  };
+    };
 }

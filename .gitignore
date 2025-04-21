@@ -16,3 +16,4 @@ pomidor-test-*
 *.lst
 .direnv
 result
+config.toml
