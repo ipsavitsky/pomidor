@@ -1,0 +1,4 @@
+[*.d]
+indent_size = 2
+tab_width = 2
+dfmt_brace_style = knr
