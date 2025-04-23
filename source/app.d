@@ -34,17 +34,6 @@ int second_period(CountdownMode mode)
   }
 }
 
-CountdownMode next_mode(CountdownMode currentMode)
-{
-  final switch (currentMode) {
-  case CountdownMode.Working:
-    return CountdownMode.Resting;
-  case CountdownMode.Resting:
-  case CountdownMode.LongResting:
-    return CountdownMode.Working;
-  }
-}
-
 string message(CountdownMode currentMode)
 {
   final switch (currentMode) {
@@ -56,15 +45,27 @@ string message(CountdownMode currentMode)
   }
 }
 
+string mode_to_string(CountdownMode mode)
+{
+  final switch (mode) {
+  case CountdownMode.Working:
+    return "working";
+  case CountdownMode.Resting:
+    return "resting";
+  case CountdownMode.LongResting:
+    return "long resting";
+  }
+}
+
 class App {
 private:
-  CountdownMode mode;
+  CountdownMode mode = CountdownMode.Working;
   TOMLDocument config;
+  int periodCount = 1;
 
 public:
   this(TOMLDocument conf)
   {
-    mode = CountdownMode.Working;
     config = conf;
     initscr();
     cbreak();
@@ -97,6 +98,7 @@ public:
         send_notification(config["ntfy"], message(mode));
       }
 
+      periodCount++;
       draw_inter_screen();
       refresh();
       timeout(-1);
@@ -118,6 +120,22 @@ public:
   }
 
 private:
+
+  CountdownMode next_mode(CountdownMode currentMode)
+  {
+    final switch (currentMode) {
+    case CountdownMode.Working:
+      if (periodCount % 8 == 0) {
+        return CountdownMode.LongResting;
+      } else {
+        return CountdownMode.Resting;
+      }
+    case CountdownMode.Resting:
+    case CountdownMode.LongResting:
+      return CountdownMode.Working;
+    }
+  }
+
   void next()
   {
     mode = next_mode(mode);
@@ -126,16 +144,16 @@ private:
   void draw_inter_screen()
   {
     clear();
-    printw(toStringz(format("Press n for next phase (%s)\n",
-        next_mode(mode) == CountdownMode.Working ? "working" : "resting")));
+    printw(toStringz(format("Press n for next phase (%s, period %d)\n",
+        mode_to_string(next_mode(mode)), periodCount)));
     printw(toStringz("Press q to quit"));
   }
 
   void draw_screen(int secondsLeft)
   {
     clear();
-    auto status_string = format("You have %dm%02ds of %s left\n", secondsLeft / 60,
-        secondsLeft % 60, mode == CountdownMode.Working ? "working" : "resting");
+    auto status_string = format("You have %dm%02ds of %s left\n",
+        secondsLeft / 60, secondsLeft % 60, mode_to_string(mode));
     printw(toStringz(status_string));
     printw(toStringz("Press n to skip this phase\n"));
     printw(toStringz("Press q to quit"));
