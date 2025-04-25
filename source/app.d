@@ -11,6 +11,7 @@ import core.thread;
 import core.stdc.stdlib;
 import toml;
 import notification;
+import clock;
 
 const int working_period = 25 * 60;
 const int resting_period = 5 * 60;
@@ -60,6 +61,7 @@ class App {
 private:
   CountdownMode mode;
   TOMLDocument config;
+  Clock clock;
 
 public:
   this(TOMLDocument conf)
@@ -71,6 +73,7 @@ public:
     noecho();
     timeout(0);
     keypad(stdscr, 1);
+    clock = new Clock();
   }
 
   ~this()
@@ -137,6 +140,7 @@ private:
     auto status_string = format("You have %dm%02ds of %s left\n", secondsLeft / 60,
         secondsLeft % 60, mode == CountdownMode.Working ? "working" : "resting");
     printw(toStringz(status_string));
+    clock.draw();
     printw(toStringz("Press n to skip this phase\n"));
     printw(toStringz("Press q to quit"));
   }
