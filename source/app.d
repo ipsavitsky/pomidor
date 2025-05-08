@@ -12,16 +12,33 @@ import core.stdc.stdlib;
 import toml;
 import notification;
 
+/**
+   Time it takes to work, in seconds
+ */
 const int working_period = 25 * 60;
+
+/**
+   Time it takes to rest, in seconds
+ */
 const int resting_period = 5 * 60;
+
+/**
+   Time it takes to long rest (usually, every forth), in seconds
+ */
 const int long_resting_period = 25 * 60;
 
+/**
+   Enum to represent the current state of the timer
+ */
 enum CountdownMode {
   Working,
   Resting,
   LongResting
 }
 
+/**
+   Convert mode to time period
+ */
 int second_period(CountdownMode mode)
 {
   final switch (mode) {
@@ -34,6 +51,9 @@ int second_period(CountdownMode mode)
   }
 }
 
+/**
+   Convert mode to a message string when switching from mode to mode
+ */
 string message(CountdownMode currentMode)
 {
   final switch (currentMode) {
@@ -45,6 +65,9 @@ string message(CountdownMode currentMode)
   }
 }
 
+/**
+   Reflect mode to string
+ */
 string mode_to_string(CountdownMode mode)
 {
   final switch (mode) {
@@ -57,6 +80,9 @@ string mode_to_string(CountdownMode mode)
   }
 }
 
+/**
+   Class that represent the current app state
+ */
 class App {
 private:
   CountdownMode mode = CountdownMode.Working;
@@ -64,6 +90,9 @@ private:
   int periodCount = 1;
 
 public:
+  /**
+     Initialize the app with a config
+   */
   this(TOMLDocument conf)
   {
     config = conf;
@@ -79,6 +108,9 @@ public:
     endwin();
   }
 
+  /**
+     Run the app with the current configuration
+   */
   void run()
   {
     outer: while (true) {

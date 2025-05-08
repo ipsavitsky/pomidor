@@ -2,6 +2,9 @@ import toml;
 import requests;
 import std.format;
 
+/**
+   Send a ntfy notification to a given topic
+ */
 void send_notification(TOMLValue ntfy_conf, string notif_text)
 {
   auto rq = Request();
