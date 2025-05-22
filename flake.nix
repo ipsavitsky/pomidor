@@ -28,7 +28,7 @@
           version = "0.1.0";
           src = ./.;
           dubLock = ./nix/dub-lock.json;
-          buildInputs = [ pkgs.ncurses ];
+          buildInputs = [ pkgs.libcaca ];
           compiler = pkgs.dmd;
           installPhase = ''
             runHook preInstall
@@ -42,7 +42,7 @@
         default = pkgs.mkShell {
           packages = with pkgs; [
             dub-to-nix
-            ncurses
+            libcaca
             dmd
             dub
             fd
