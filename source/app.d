@@ -4,7 +4,7 @@ import std.string;
 import std.format;
 import std.concurrency;
 import std.process;
-import deimos.ncurses;
+// import deimos.ncurses;
 import core.thread;
 import toml;
 import notification;
@@ -93,16 +93,16 @@ public:
   this(TOMLDocument conf)
   {
     config = conf;
-    initscr();
-    cbreak();
-    noecho();
-    timeout(0);
-    keypad(stdscr, 1);
+    // initscr();
+    // cbreak();
+    // noecho();
+    // timeout(0);
+    // keypad(stdscr, 1);
   }
 
   ~this()
   {
-    endwin();
+    // endwin();
   }
 
   /**
@@ -110,42 +110,42 @@ public:
    */
   void run()
   {
-    outer: while (true) {
-      countdown: foreach (a; screen_generator(second_period(mode))) {
-        immutable int ch = getch();
-        switch (ch) {
-        case 'q':
-          break outer;
-        case 'n':
-          break countdown;
-        default:
-          break;
-        }
-        refresh();
-      }
-      if (config["ntfy"] != null) {
-        send_notification(config["ntfy"], message(mode));
-      }
+    // outer: while (true) {
+    //   countdown: foreach (a; screen_generator(second_period(mode))) {
+    //     immutable int ch = getch();
+    //     switch (ch) {
+    //     case 'q':
+    //       break outer;
+    //     case 'n':
+    //       break countdown;
+    //     default:
+    //       break;
+    //     }
+    //     refresh();
+    //   }
+    //   if (config["ntfy"] != null) {
+    //     send_notification(config["ntfy"], message(mode));
+    //   }
 
-      periodCount++;
-      draw_inter_screen();
-      refresh();
-      timeout(-1);
-      input: while (true) {
-        immutable int ch = getch();
-        switch (ch) {
-        case 'q':
-          break outer;
-        case 'n':
-          break input;
-        default:
-          break;
-        }
-      }
+    //   periodCount++;
+    //   draw_inter_screen();
+    //   refresh();
+    //   timeout(-1);
+    //   input: while (true) {
+    //     immutable int ch = getch();
+    //     switch (ch) {
+    //     case 'q':
+    //       break outer;
+    //     case 'n':
+    //       break input;
+    //     default:
+    //       break;
+    //     }
+    //   }
 
-      next();
-      timeout(0);
-    }
+    //   next();
+    //   timeout(0);
+    // }
   }
 
 private:
@@ -172,20 +172,20 @@ private:
 
   void draw_inter_screen()
   {
-    clear();
-    printw(toStringz(format("Press n for next phase (%s, period %d)\n",
-        mode_to_string(next_mode(mode)), periodCount)));
-    printw(toStringz("Press q to quit"));
+    // clear();
+    // printw(toStringz(format("Press n for next phase (%s, period %d)\n",
+    //     mode_to_string(next_mode(mode)), periodCount)));
+    // printw(toStringz("Press q to quit"));
   }
 
   void draw_screen(int secondsLeft)
   {
-    clear();
-    auto status_string = format("You have %dm%02ds of %s left\n",
-        secondsLeft / 60, secondsLeft % 60, mode_to_string(mode));
-    printw(toStringz(status_string));
-    printw(toStringz("Press n to skip this phase\n"));
-    printw(toStringz("Press q to quit"));
+    // clear();
+    // auto status_string = format("You have %dm%02ds of %s left\n",
+    //     secondsLeft / 60, secondsLeft % 60, mode_to_string(mode));
+    // printw(toStringz(status_string));
+    // printw(toStringz("Press n to skip this phase\n"));
+    // printw(toStringz("Press q to quit"));
   }
 
   Generator!int screen_generator(int seconds)
