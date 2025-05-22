@@ -1,4 +1,3 @@
-import std.conv;
 import std.stdio;
 import std.file;
 import std.string;
@@ -7,7 +6,6 @@ import std.concurrency;
 import std.process;
 import deimos.ncurses;
 import core.thread;
-import core.stdc.stdlib;
 import toml;
 import notification;
 
