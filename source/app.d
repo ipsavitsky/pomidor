@@ -5,7 +5,6 @@ import std.string;
 import std.format;
 import std.concurrency;
 import std.process;
-import requests;
 import deimos.ncurses;
 import core.thread;
 import core.stdc.stdlib;

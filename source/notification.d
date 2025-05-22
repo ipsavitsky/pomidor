@@ -1,18 +1,20 @@
-import toml;
-import requests;
 import std.format;
+import std.net.curl;
+import toml;
 
 /**
    Send a ntfy notification to a given topic
  */
 void send_notification(TOMLValue ntfy_conf, string notif_text)
 {
-  auto rq = Request();
-  rq.addHeaders([
-    "Authorization": format("Bearer %s", ntfy_conf["token"].str()),
-    "X-Title": "Pomidor",
-    "X-Priority": "5"
-  ]);
-  rq.post(format("%s/%s", ntfy_conf["url"].str(), ntfy_conf["topic"].str()), notif_text);
-  // check that response contains code 200
+  auto client = HTTP();
+  client.method = HTTP.Method.post;
+  client.url = format("%s/%s", ntfy_conf["url"].str(), ntfy_conf["topic"].str());
+  // client.authenticationMethod = HTTP.AuthMethod.bearer;
+  // client.setAuthentication(ntfy_conf["token"].str, "");
+  client.addRequestHeader("Authorization", "Bearer " ~ ntfy_conf["token"].str());
+  client.addRequestHeader("X-Title", "Pomidor");
+  client.addRequestHeader("X-Priority", "5");
+  client.postData(notif_text);
+  client.perform();
 }
