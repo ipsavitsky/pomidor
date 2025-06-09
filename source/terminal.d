@@ -39,5 +39,5 @@ void draw_canvas(caca_canvas_t* cv, int current, int total)
 void draw_inter_canvas(caca_canvas_t* cv) {
   caca_clear_canvas(cv);
   caca_put_str(cv, 0, 0, "Are you ready to proced?");
-  caca_put_str(cv, 0, 1, "Press anny key to continue");
+  caca_put_str(cv, 0, 1, "Press any key to continue");
 }
