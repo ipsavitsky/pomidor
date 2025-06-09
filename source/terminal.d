@@ -5,39 +5,51 @@ import core.thread;
 import std.conv;
 import std.string;
 
-void draw_clock(caca_canvas_t* cv, float progress)
+void draw_clock(caca_canvas_t* cv, int x_cent, int y_cent, int r, float progress)
 {
   auto angle = progress * PI;
-  caca_draw_circle(cv, 20, 20, 10, '#');
-  auto x = 10 * sin(-2 * angle);
-  auto y = 10 * cos(-2 * angle);
-  caca_draw_line(cv, 20, 20, cast(int)(20 - x), cast(int)(20 - y), '#');
+  caca_draw_circle(cv, x_cent, y_cent, r, '#');
+  auto x = r * sin(-2 * angle);
+  auto y = r * cos(-2 * angle);
+  caca_draw_line(cv, x_cent, y_cent, cast(int)(x_cent - x), cast(int)(y_cent - y), '#');
 }
 
-void draw_stats(caca_canvas_t* cv, int left)
+void draw_stats(caca_canvas_t* cv, int x_top_left, int y_top_left, int left)
 {
   auto mins = left / 60;
   auto secs = left % 60;
   auto st = format("%dm%02ds left in this iteration", mins, secs);
-  caca_put_str(cv, 40, 20, toStringz(st));
+  caca_put_str(cv, x_top_left, y_top_left, toStringz(st));
 }
 
-void draw_help(caca_canvas_t* cv) {
-  caca_put_str(cv, 5, 33, "Press n for next phase");
-  caca_put_str(cv, 5, 34, "Press q to quit");
+void draw_help(caca_canvas_t* cv, int x_top_left, int y_top_left)
+{
+  caca_put_str(cv, x_top_left, y_top_left, "Press n for next phase");
+  caca_put_str(cv, x_top_left, y_top_left + 1, "Press q to quit");
 }
 
 void draw_canvas(caca_canvas_t* cv, int current, int total)
 {
+  int w = caca_get_canvas_width(cv);
+  int h = caca_get_canvas_height(cv);
   caca_clear_canvas(cv);
   float f = cast(float) current / total;
-  draw_clock(cv, f);
-  draw_stats(cv, total - current);
-  draw_help(cv);
+  int center_w = w / 2;
+  int center_h = h / 2;
+  draw_clock(cv, center_w - 10 - 20, center_h, 10, f);
+  draw_stats(cv, center_w - 10 - 35, center_h + 10 + 5, total - current);
+  draw_help(cv, center_w, center_h);
 }
 
-void draw_inter_canvas(caca_canvas_t* cv) {
+void draw_inter_canvas(caca_canvas_t* cv)
+{
+  int w = caca_get_canvas_width(cv);
+  int h = caca_get_canvas_height(cv);
+  int center_w = w / 2;
+  int center_h = h / 2;
+  
   caca_clear_canvas(cv);
-  caca_put_str(cv, 0, 0, "Are you ready to proced?");
-  caca_put_str(cv, 0, 1, "Press any key to continue");
+  caca_put_str(cv, center_w - 10, center_h, "Are you ready to proced?");
+  caca_put_str(cv, center_w - 10, center_h + 1, "Press n for next phase");
+  caca_put_str(cv, center_w - 10, center_h + 2, "Press q to quit");
 }
