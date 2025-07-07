@@ -30,12 +30,12 @@ void draw_help(caca_canvas_t* cv, int x_top_left, int y_top_left)
 
 void draw_canvas(caca_canvas_t* cv, int current, int total)
 {
-  int w = caca_get_canvas_width(cv);
-  int h = caca_get_canvas_height(cv);
+  immutable int w = caca_get_canvas_width(cv);
+  immutable int h = caca_get_canvas_height(cv);
   caca_clear_canvas(cv);
   float f = cast(float) current / total;
-  int center_w = w / 2;
-  int center_h = h / 2;
+  immutable int center_w = w / 2;
+  immutable int center_h = h / 2;
   draw_clock(cv, center_w - 10 - 20, center_h, 10, f);
   draw_stats(cv, center_w - 10 - 35, center_h + 10 + 5, total - current);
   draw_help(cv, center_w, center_h);
@@ -43,11 +43,11 @@ void draw_canvas(caca_canvas_t* cv, int current, int total)
 
 void draw_inter_canvas(caca_canvas_t* cv)
 {
-  int w = caca_get_canvas_width(cv);
-  int h = caca_get_canvas_height(cv);
-  int center_w = w / 2;
-  int center_h = h / 2;
-  
+  immutable int w = caca_get_canvas_width(cv);
+  immutable int h = caca_get_canvas_height(cv);
+  immutable int center_w = w / 2;
+  immutable int center_h = h / 2;
+
   caca_clear_canvas(cv);
   caca_put_str(cv, center_w - 10, center_h, "Are you ready to proced?");
   caca_put_str(cv, center_w - 10, center_h + 1, "Press n for next phase");
