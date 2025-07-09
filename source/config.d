@@ -1,4 +1,5 @@
 import std.file;
+import std.stdio;
 import toml;
 
 struct Ntfy {
@@ -12,9 +13,9 @@ struct Config {
 }
 
 string parseNtfyToken(TOMLDocument config) {
-  if (config["ntfy"]["token"] != null) {
+  if ("token" in config["ntfy"]) {
     return config["ntfy"]["token"].str();
-  } else if (config["ntfy"]["token_file"] != null) {
+  } else if ("token_file" in config["ntfy"]) {
     return readText(config["ntfy"]["token_file"].str());
   } else return null;
 }
