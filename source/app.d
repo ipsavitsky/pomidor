@@ -1,7 +1,7 @@
 import std.string;
 import std.concurrency;
 import core.thread;
-import toml;
+import config;
 import terminal;
 import notification;
 import caca;
@@ -13,7 +13,7 @@ import utils;
 class App {
 private:
   CountdownMode mode = CountdownMode.Working;
-  TOMLDocument config;
+  Config config;
   int periodCount = 1;
   caca_display_t* dp;
   caca_canvas_t* cv;
@@ -22,7 +22,7 @@ public:
   /**
      Initialize the app with a config
    */
-  this(TOMLDocument conf)
+  this(Config conf)
   {
     config = conf;
     dp = caca_create_display_with_driver(null, "ncurses"); // we're keeping this for now, but x11 output might be pretty cool idk
@@ -58,7 +58,7 @@ public:
           }
         }
       }
-      send_notification(config["ntfy"], message(mode));
+      send_notification(config.ntfy, message(mode));
       draw_inter_canvas(cv);
       caca_refresh_display(dp);
       downtime_loop: while(true) {
