@@ -47,10 +47,15 @@
             dub
             fd
             serve-d
+            nil
             dlang-tools.packages.x86_64-linux.dscanner
             dlang-tools.packages.x86_64-linux.dfmt
           ];
         };
+      };
+
+      homeManagerModules = {
+        pomidor = (import ./nix/hm.nix) { pomidor = self.packages.x86_64-linux.pomidor; };
       };
     };
 }

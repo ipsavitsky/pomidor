@@ -14,7 +14,7 @@ void main()
       writeln("no xdg config home set");
       return;
     }
-    config = parseConfig(cast(string) read(format("%s/pomidor/config.toml", config_home)));
+    config = parseConfig(readText(format("%s/pomidor/config.toml", config_home)));
   } catch (std.file.FileException) {
     writeln("Could not find config file");
     return;
