@@ -6,13 +6,13 @@ jobs:
   nix:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: DeterminateSystems/nix-installer-action@v19
       - run: nix flake check
   dscanner:
     runs-on: ubuntu-latest
     steps:
-      - uses: actions/checkout@v4
+      - uses: actions/checkout@v5
       - uses: dlang-community/setup-dlang@v2
       - run: dub fetch dscanner
       - run: dub run dscanner -- lint source/*.d
