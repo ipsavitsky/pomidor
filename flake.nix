@@ -1,7 +1,6 @@
 {
   inputs = {
     nixpkgs.url = "github:nixos/nixpkgs/nixos-unstable";
-    dlang-tools.url = "github:ipsavitsky/dlang-tools";
     treefmt-nix = {
       url = "github:numtide/treefmt-nix";
       inputs.nixpkgs.follows = "nixpkgs";
@@ -12,7 +11,6 @@
     {
       self,
       nixpkgs,
-      dlang-tools,
       treefmt-nix,
     }:
     let
@@ -48,8 +46,8 @@
             fd
             serve-d
             nil
-            dlang-tools.packages.x86_64-linux.dscanner
-            dlang-tools.packages.x86_64-linux.dfmt
+            dscanner
+            dformat
           ];
         };
       };
