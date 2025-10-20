@@ -9,23 +9,25 @@ struct Ntfy {
 }
 
 struct Config {
-   Ntfy ntfy;
+  Ntfy ntfy;
 }
 
-string parseNtfyToken(TOMLDocument config) {
+string parseNtfyToken(TOMLDocument config)
+{
   if ("token" in config["ntfy"]) {
     return config["ntfy"]["token"].str();
   } else if ("token_file" in config["ntfy"]) {
     return readText(config["ntfy"]["token_file"].str());
-  } else return null;
+  } else
+    return null;
 }
 
-Config parseConfig(string path) {
+Config parseConfig(string path)
+{
   TOMLDocument tomlConf = parseTOML(path);
   Config res = {
     ntfy: {
-      url: tomlConf["ntfy"]["url"].str(),
-      topic: tomlConf["ntfy"]["topic"].str(),
+      url: tomlConf["ntfy"]["url"].str(), topic: tomlConf["ntfy"]["topic"].str(),
       token: parseNtfyToken(tomlConf),
     },
   };

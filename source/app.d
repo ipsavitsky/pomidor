@@ -61,16 +61,16 @@ public:
       send_notification(config.ntfy, message(mode));
       draw_inter_canvas(cv);
       caca_refresh_display(dp);
-      downtime_loop: while(true) {
-	caca_get_event(dp, CACA_EVENT_KEY_PRESS, &ev, -1);
-	switch (caca_get_event_key_ch(&ev)) {
-	case 'q':
-	  return;
-	case 'n':
-	  break downtime_loop;
-	default:
-	  break;
-	}
+      downtime_loop: while (true) {
+        caca_get_event(dp, CACA_EVENT_KEY_PRESS, &ev, -1);
+        switch (caca_get_event_key_ch(&ev)) {
+        case 'q':
+          return;
+        case 'n':
+          break downtime_loop;
+        default:
+          break;
+        }
       }
       next();
     }

@@ -22,7 +22,7 @@ in
 
     settings = mkOption {
       type = tomlFormat.type;
-      default = {};
+      default = { };
       example = literalExpression ''
         [ntfy]
         topic = "topic123"
