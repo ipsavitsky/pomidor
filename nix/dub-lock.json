@@ -1,1 +1,21 @@
-{ "dependencies": { "ncurses": { "version": "1.0.0", "sha256": "0ivl88vp2dy9rpv6x3f9jlyqa7aps2x1kkyx80w2d4vcs31pzmb2" }, "toml": { "version": "2.0.1", "sha256": "0dhr1k7ny33k7jbd3rvfrjifmpl104qwnblkhlyigvwwni73859i" }, "unit-threaded": { "version": "2.0.5", "sha256": "19fd7w8nldfh85p8bzfnzanxrl2i8l3r947l4sjlbsaknjaim5w2" } } }
+{
+  "dependencies": {
+    "glib-d": {
+      "version": "27f1751",
+      "repository": "https://github.com/rtbo/glib-d",
+      "sha256": "1h31mk5k0gmpzjrna6826q1dldh26xvgqj3g1v6a25bj9p6riir8"
+    },
+    "libnotify-d": {
+      "version": "1.0.0",
+      "sha256": "0y52p540xzs7f405rsa4bhnwa9lr94nnv4vhqba665976sm2347v"
+    },
+    "toml": {
+      "version": "2.0.1",
+      "sha256": "0dhr1k7ny33k7jbd3rvfrjifmpl104qwnblkhlyigvwwni73859i"
+    },
+    "unit-threaded": {
+      "version": "2.0.5",
+      "sha256": "19fd7w8nldfh85p8bzfnzanxrl2i8l3r947l4sjlbsaknjaim5w2"
+    }
+  }
+}

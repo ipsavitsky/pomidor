@@ -1,5 +1,9 @@
 import timings;
 
+version (unittest) {
+  import unit_threaded;
+}
+
 /**
    Enum to represent the current state of the timer
  */
@@ -51,4 +55,49 @@ string mode_to_string(CountdownMode mode)
   case CountdownMode.LongResting:
     return "long resting";
   }
+}
+
+@("second_period for Working mode")
+unittest {
+  second_period(CountdownMode.Working).shouldEqual(25 * 60);
+}
+
+@("second_period for Resting mode")
+unittest {
+  second_period(CountdownMode.Resting).shouldEqual(5 * 60);
+}
+
+@("second_period for LongResting mode")
+unittest {
+  second_period(CountdownMode.LongResting).shouldEqual(25 * 60);
+}
+
+@("message for Working mode")
+unittest {
+  message(CountdownMode.Working).shouldEqual("We're done working on this; time to cool down");
+}
+
+@("message for Resting mode")
+unittest {
+  message(CountdownMode.Resting).shouldEqual("Enough resting; time to get back to work");
+}
+
+@("message for LongResting mode")
+unittest {
+  message(CountdownMode.LongResting).shouldEqual("Enough resting; time to get back to work");
+}
+
+@("mode_to_string for Working mode")
+unittest {
+  mode_to_string(CountdownMode.Working).shouldEqual("working");
+}
+
+@("mode_to_string for Resting mode")
+unittest {
+  mode_to_string(CountdownMode.Resting).shouldEqual("resting");
+}
+
+@("mode_to_string for LongResting mode")
+unittest {
+  mode_to_string(CountdownMode.LongResting).shouldEqual("long resting");
 }

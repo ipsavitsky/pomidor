@@ -9,12 +9,12 @@ void main()
 {
   config.Config config;
   try {
-    auto config_home = environment.get("XDG_CONFIG_HOME");
-    if (config_home is null) {
-      writeln("no xdg config home set");
+    auto home = environment.get("HOME");
+    if (home is null) {
+      writeln("HOME environment variable not set");
       return;
     }
-    config = parseConfig(readText(format("%s/pomidor/config.toml", config_home)));
+    config = parseConfig(readText(format("%s/.config/pomidor/config.toml", home)));
   } catch (std.file.FileException) {
     writeln("Could not find config file");
     return;
@@ -24,7 +24,6 @@ void main()
 
   state.run();
 
-  // I have to clean up explicitly??
   destroy(state);
   return;
 }

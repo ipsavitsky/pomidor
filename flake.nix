@@ -26,7 +26,10 @@
           version = "0.1.0";
           src = ./.;
           dubLock = ./nix/dub-lock.json;
-          buildInputs = [ pkgs.libcaca ];
+          buildInputs = [
+            pkgs.libcaca
+            pkgs.libnotify
+          ];
           compiler = pkgs.dmd;
           installPhase = ''
             runHook preInstall
@@ -48,6 +51,7 @@
             nil
             dscanner
             dformat
+            libnotify
           ];
         };
       };

@@ -4,5 +4,19 @@ authors "Ilya Savitsky"
 copyright "Copyright © 2025, Ilya Savitsky"
 license "MIT"
 libs "caca"
-# dependency "ncurses" version="~>1.0.0"
 dependency "toml" version="~>2.0.1"
+dependency "libnotify-d" version="*"
+
+configuration "application" {
+  targetType "executable"
+  mainSourceFile "source/main.d"
+  excludedSourceFiles "source/test.d"
+}
+
+configuration "unittest" {
+  dependency "unit-threaded" version="*"
+  mainSourceFile "bin/ut.d"
+  excludedSourceFiles "source/main.d"
+  targetType "executable"
+  preBuildCommands "$DUB run --compiler=$$DC unit-threaded -c gen_ut_main -- -f bin/ut.d -d dub"
+}

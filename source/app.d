@@ -58,7 +58,7 @@ public:
           }
         }
       }
-      send_notification(config.ntfy, message(mode));
+      send_notification(config, message(mode));
       draw_inter_canvas(cv);
       caca_refresh_display(dp);
       downtime_loop: while (true) {

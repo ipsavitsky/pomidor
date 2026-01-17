@@ -1,6 +1,8 @@
 {
 	"fileVersion": 1,
 	"versions": {
+		"glib-d": {"version":"27f1751","repository":"git+https://github.com/rtbo/glib-d"},
+		"libnotify-d": "1.0.0",
 		"toml": "2.0.1",
 		"unit-threaded": "2.0.5"
 	}
