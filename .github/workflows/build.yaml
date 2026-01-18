@@ -15,9 +15,21 @@ jobs:
       - uses: actions/checkout@v6
       - uses: awalsh128/cache-apt-pkgs-action@v1
         with:
-          packages: libcaca-dev
+          packages: libcaca-dev libnotify-dev
           version: 1.0
       - uses: dlang-community/setup-dlang@v2
         with:
           compiler: dmd
       - run: dub build
+  test:
+    runs-on: ubuntu-latest
+    steps:
+      - uses: actions/checkout@v6
+      - uses: awalsh128/cache-apt-pkgs-action@v1
+        with:
+          packages: libcaca-dev libnotify-dev
+          version: 1.0
+      - uses: dlang-community/setup-dlang@v2
+        with:
+          compiler: dmd
+      - run: dub test
