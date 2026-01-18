@@ -21,7 +21,7 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
         with:
           persist-credentials: false
-      - uses: awalsh128/cache-apt-pkgs-action@0e3c11464a8cfae52ee6ceb2b33777bcc9187892
+      - uses: awalsh128/cache-apt-pkgs-action@acb598e5ddbc6f68a970c5da0688d2f3a9f04d05
         with:
           packages: libcaca-dev libnotify-dev
           version: 1.0
@@ -37,7 +37,7 @@ jobs:
       - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
         with:
           persist-credentials: false
-      - uses: awalsh128/cache-apt-pkgs-action@0e3c11464a8cfae52ee6ceb2b33777bcc9187892
+      - uses: awalsh128/cache-apt-pkgs-action@acb598e5ddbc6f68a970c5da0688d2f3a9f04d05
         with:
           packages: libcaca-dev libnotify-dev
           version: 1.0
