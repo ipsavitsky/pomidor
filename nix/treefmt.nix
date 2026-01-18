@@ -4,5 +4,6 @@ _: {
     nixfmt.enable = true;
     dscanner.enable = true;
     dfmt.enable = true;
+    zizmor.enable = true;
   };
 }

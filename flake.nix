@@ -19,6 +19,7 @@
     in
     {
       formatter.x86_64-linux = treefmtModule.config.build.wrapper;
+      checks.x86_64-linux.formatting = treefmtModule.config.build.check self;
       packages.x86_64-linux = rec {
         default = pomidor;
         pomidor = pkgs.buildDubPackage {

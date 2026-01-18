@@ -5,31 +5,43 @@ on: [workflow_call]
 jobs:
   nix:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v6
-      - uses: DeterminateSystems/nix-installer-action@v21
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+        with:
+          persist-credentials: false
+      - uses: DeterminateSystems/nix-installer-action@c5a866b6ab867e88becbed4467b93592bce69f8a
       - run: nix build
   native:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v6
-      - uses: awalsh128/cache-apt-pkgs-action@v1
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+        with:
+          persist-credentials: false
+      - uses: awalsh128/cache-apt-pkgs-action@0e3c11464a8cfae52ee6ceb2b33777bcc9187892
         with:
           packages: libcaca-dev libnotify-dev
           version: 1.0
-      - uses: dlang-community/setup-dlang@v2
+      - uses: dlang-community/setup-dlang@0a7469b93f791d83f30932c6fd105796c6966e20
         with:
           compiler: dmd
       - run: dub build
   test:
     runs-on: ubuntu-latest
+    permissions:
+      contents: read
     steps:
-      - uses: actions/checkout@v6
-      - uses: awalsh128/cache-apt-pkgs-action@v1
+      - uses: actions/checkout@8e8c483db84b4bee98b60c0593521ed34d9990e8
+        with:
+          persist-credentials: false
+      - uses: awalsh128/cache-apt-pkgs-action@0e3c11464a8cfae52ee6ceb2b33777bcc9187892
         with:
           packages: libcaca-dev libnotify-dev
           version: 1.0
-      - uses: dlang-community/setup-dlang@v2
+      - uses: dlang-community/setup-dlang@0a7469b93f791d83f30932c6fd105796c6966e20
         with:
           compiler: dmd
       - run: dub test
