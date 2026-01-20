@@ -42,7 +42,7 @@ public:
   void run()
   {
     while (true) {
-      auto period = second_period(mode);
+      auto period = period_length(config.split, mode);
       caca_event_t ev;
       current_loop: foreach (s; countdown(period)) {
         draw_canvas(cv, s, period);

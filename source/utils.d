@@ -1,7 +1,15 @@
 import timings;
+import std.conv;
 
 version (unittest) {
   import unit_threaded;
+}
+
+enum Split {
+  // 25/5
+  Short,
+  // 50/10
+  Long
 }
 
 /**
@@ -16,15 +24,26 @@ enum CountdownMode {
 /**
    Convert mode to time period
  */
-int second_period(CountdownMode mode)
+int period_length(Split split, CountdownMode mode)
 {
+  auto f = 1.0;
+
+  final switch (split) {
+  case Split.Short:
+    f = 1.0;
+    break;
+  case Split.Long:
+    f = 2.0;
+    break;
+  }
+
   final switch (mode) {
   case CountdownMode.Working:
-    return working_period;
+    return to!int(f * working_period);
   case CountdownMode.Resting:
-    return resting_period;
+    return to!int(f * resting_period);
   case CountdownMode.LongResting:
-    return long_resting_period;
+    return to!int(f * long_resting_period);
   }
 }
 
@@ -59,17 +78,17 @@ string mode_to_string(CountdownMode mode)
 
 @("second_period for Working mode")
 unittest {
-  second_period(CountdownMode.Working).shouldEqual(25 * 60);
+  period_length(Split.Short, CountdownMode.Working).shouldEqual(25 * 60);
 }
 
 @("second_period for Resting mode")
 unittest {
-  second_period(CountdownMode.Resting).shouldEqual(5 * 60);
+  period_length(Split.Short, CountdownMode.Resting).shouldEqual(5 * 60);
 }
 
 @("second_period for LongResting mode")
 unittest {
-  second_period(CountdownMode.LongResting).shouldEqual(25 * 60);
+  period_length(Split.Short, CountdownMode.LongResting).shouldEqual(25 * 60);
 }
 
 @("message for Working mode")

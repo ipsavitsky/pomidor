@@ -1,8 +1,10 @@
 import std.algorithm.searching : canFind;
 import std.file;
 import std.stdio;
+import std.conv;
 import std.typecons : Nullable;
 import toml;
+import utils;
 
 version (unittest) {
   import unit_threaded;
@@ -35,6 +37,8 @@ struct NtfyConfig {
 
 struct Config {
   ConfigType type;
+  bool enable_long_rest;
+  Split split;
   Nullable!NtfyConfig ntfy;
 }
 
@@ -95,6 +99,28 @@ Config parseConfig(string path)
   case ConfigType.Native:
     res.ntfy.nullify();
     break;
+  }
+
+  if (!tomlConf.keys.canFind("enable_long_rest")) {
+    res.enable_long_rest = false;
+  } else {
+    // res.enable_long_rest = tomlConf["enable_long_rest"]._store.boolv;
+    res.enable_long_rest = true;
+  }
+
+  if (!tomlConf.keys.canFind("split")) {
+    res.split = Split.Short;
+  } else {
+    switch (tomlConf["split"].str()) {
+    case "short":
+      res.split = Split.Short;
+      break;
+    case "long":
+      res.split = Split.Long;
+      break;
+    default:
+      throw new InvalidValueException("Invalid 'split' field");
+    }
   }
 
   return res;
