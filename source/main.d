@@ -14,7 +14,7 @@ void main()
       writeln("HOME environment variable not set");
       return;
     }
-    config = parseConfig(readText(format("%s/.config/pomidor/config.toml", home)));
+    config = parseConfig(readText(format("%s/.config/pomidor/config.sdl", home)));
   } catch (std.file.FileException) {
     writeln("Could not find config file");
     return;

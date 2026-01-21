@@ -4,7 +4,7 @@ authors "Ilya Savitsky"
 copyright "Copyright © 2025, Ilya Savitsky"
 license "MIT"
 libs "caca"
-dependency "toml" version="~>2.0.1"
+dependency "sdlang-d" version="~>0.10.6"
 dependency "libnotify-d" version="*"
 
 configuration "application" {

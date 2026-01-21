@@ -25,34 +25,39 @@ dub build
 
 ## Configuration
 
-Create a configuration file at `~/.config/pomidor/config.toml`.
+Create a configuration file at `~/.config/pomidor/config.sdl`.
+
+Required fields: `type` and `split`. The `split` field controls the timer duration (`short` or `long`). Optional: `enable_long_rest` (defaults to false).
 
 ### Using ntfy notifications:
 
-```toml
-type = "ntfy"
-
-[ntfy]
-url = "https://ntfy.sh"
-topic = "your-topic"
-token = "your-token"
+```
+type "ntfy"
+split "short"
+ntfy {
+  url "https://ntfy.sh"
+  topic "your-topic"
+  token "your-token"
+}
 ```
 
 Or using a token file:
 
-```toml
-type = "ntfy"
-
-[ntfy]
-url = "https://ntfy.sh"
-topic = "your-topic"
-token_file = "/path/to/token/file"
+```
+type "ntfy"
+split "short"
+ntfy {
+  url "https://ntfy.sh"
+  topic "your-topic"
+  token_file "/path/to/token/file"
+}
 ```
 
 ### Using native desktop notifications:
 
-```toml
-type = "native"
+```
+type "native"
+split "short"
 ```
 
 This will use libnotify for desktop notifications without any additional configuration.

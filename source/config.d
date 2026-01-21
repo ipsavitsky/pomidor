@@ -3,8 +3,8 @@ import std.file;
 import std.stdio;
 import std.conv;
 import std.typecons : Nullable;
-import toml;
 import utils;
+import sdlang;
 
 version (unittest) {
   import unit_threaded;
@@ -30,6 +30,7 @@ class InvalidValueException : Exception {
 }
 
 struct NtfyConfig {
+  // TODO: make this a url type
   string url;
   string topic;
   string token;
@@ -42,109 +43,111 @@ struct Config {
   Nullable!NtfyConfig ntfy;
 }
 
-NtfyConfig parseNtfyConfig(TOMLDocument config)
+NtfyConfig parseNtfyConfig(Tag config)
 {
-  if (!config.keys.canFind("ntfy")) {
+  Tag ntfy = config.getTag("ntfy");
+  if (ntfy is null) {
     throw new FieldNotFoundException("Missing 'ntfy' section");
   }
-  auto ntfyConfig = config["ntfy"].table;
-  if (!ntfyConfig.keys.canFind("url")) {
-    throw new InvalidValueException("Missing 'url' field");
-  }
-  if (!ntfyConfig.keys.canFind("topic")) {
-    throw new InvalidValueException("Missing 'topic' field");
-  }
-  return NtfyConfig(ntfyConfig["url"].str(), ntfyConfig["topic"].str(),
-      parseNtfyToken(ntfyConfig));
+  return NtfyConfig(ntfy.expectTagValue!string("url"),
+      ntfy.expectTagValue!string("topic"), parseNtfyToken(ntfy));
 }
 
-string parseNtfyToken(TOMLValue[string] ntfyConfig)
+string parseNtfyToken(Tag ntfyConfig)
 {
-  if (ntfyConfig.keys.canFind("token")) {
-    return ntfyConfig["token"].str();
-  } else if (ntfyConfig.keys.canFind("token_file")) {
-    return readText(ntfyConfig["token_file"].str());
+  Tag token = ntfyConfig.getTag("token");
+  Tag token_file = ntfyConfig.getTag("token_file");
+  if (token !is null) {
+    return token.expectValue!string();
+  } else if (token_file !is null) {
+    return readText(token_file.expectValue!string());
   } else {
     throw new InvalidValueException("Missing 'token' or 'token_file' field");
   }
 }
 
-ConfigType parseType(TOMLDocument config)
+ConfigType parseType(Tag config)
 {
-  if (!config.keys.canFind("type")) {
-    throw new FieldNotFoundException("Missing 'type' field");
-  } else {
-    switch (config["type"].str()) {
-    case "ntfy":
-      return ConfigType.Ntfy;
-    case "native":
-      return ConfigType.Native;
-    default:
-      throw new InvalidValueException("Invalid 'type' field");
-    }
+  immutable string type = config.expectTagValue!string("type");
+
+  switch (type) {
+  case "ntfy":
+    return ConfigType.Ntfy;
+  case "native":
+    return ConfigType.Native;
+  default:
+    throw new InvalidValueException("Invalid 'type' field");
   }
 }
 
-Config parseConfig(string path)
+Split parseSplit(Tag config)
 {
-  TOMLDocument tomlConf = parseTOML(path);
-  ConfigType type = parseType(tomlConf);
-  Config res;
-  res.type = type;
+  immutable string split = config.expectTagValue!string("split");
 
-  final switch (type) {
+  switch (split) {
+  case "short":
+    return Split.Short;
+  case "long":
+    return Split.Long;
+  default:
+    throw new InvalidValueException("Invalid 'split' field");
+  }
+}
+
+Config parseConfig(string conf_text)
+{
+  Tag conf = parseSource(conf_text);
+  Config res;
+  res.type = parseType(conf);
+
+  final switch (res.type) {
   case ConfigType.Ntfy:
-    res.ntfy = parseNtfyConfig(tomlConf);
+    res.ntfy = parseNtfyConfig(conf);
     break;
   case ConfigType.Native:
     res.ntfy.nullify();
     break;
   }
 
-  if (!tomlConf.keys.canFind("enable_long_rest")) {
-    res.enable_long_rest = false;
-  } else {
-    // res.enable_long_rest = tomlConf["enable_long_rest"]._store.boolv;
-    res.enable_long_rest = true;
-  }
-
-  if (!tomlConf.keys.canFind("split")) {
-    res.split = Split.Short;
-  } else {
-    switch (tomlConf["split"].str()) {
-    case "short":
-      res.split = Split.Short;
-      break;
-    case "long":
-      res.split = Split.Long;
-      break;
-    default:
-      throw new InvalidValueException("Invalid 'split' field");
-    }
-  }
+  res.enable_long_rest = conf.getTagValue("enable_long_rest", false);
+  res.split = parseSplit(conf);
 
   return res;
 }
 
-@("parseNtfyToken with direct token")
+@("simple config passes")
 unittest {
-  auto ntfyConfig = ["token": TOMLValue("test-token")];
-  parseNtfyToken(ntfyConfig).shouldEqual("test-token");
+  auto test_config = `type "native"
+    split "short"
+    `;
+
+  Config conf = parseConfig(test_config);
+  conf.type.shouldEqual(ConfigType.Native);
+  conf.split.shouldEqual(Split.Short);
+  conf.enable_long_rest.shouldEqual(false);
+  assert(conf.ntfy.isNull());
 }
 
-@("parseNtfyToken with token file")
+@("ntfy config passes")
 unittest {
-  auto tmpFile = "/tmp/test_token_file";
-  std.file.write(tmpFile, "file-token");
-  scope (exit)
-    std.file.remove(tmpFile);
+  auto test_config = `type "ntfy"
+    split "short"
+    ntfy {
+      url "123"
+      token "456"
+      topic "789"
+    }
+    `;
 
-  auto ntfyConfig = ["token_file": TOMLValue(tmpFile)];
-  parseNtfyToken(ntfyConfig).shouldEqual("file-token");
+  Config conf = parseConfig(test_config);
+  conf.ntfy.get.url.shouldEqual("123");
+  conf.ntfy.get.token.shouldEqual("456");
+  conf.ntfy.get.topic.shouldEqual("789");
 }
 
-@("parseNtfyToken without token")
+@("erroneous config throws")
 unittest {
-  auto ntfyConfig = cast(TOMLValue[string]) null;
-  parseNtfyToken(ntfyConfig).shouldThrow!InvalidValueException();
+  auto test_config = `type "native"
+    `;
+  parseConfig(test_config).shouldThrow;
 }
