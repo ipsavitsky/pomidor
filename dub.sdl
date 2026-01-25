@@ -18,5 +18,5 @@ configuration "unittest" {
   mainSourceFile "bin/ut.d"
   excludedSourceFiles "source/main.d"
   targetType "executable"
-  preBuildCommands "$DUB run --compiler=$$DC unit-threaded -c gen_ut_main -- -f bin/ut.d -d dub"
+  preBuildCommands "$DUB run --compiler=$$DC unit-threaded -c gen_ut_main -- -f bin/ut.d"
 }
