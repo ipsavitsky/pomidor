@@ -11,7 +11,7 @@ jobs:
       - uses: actions/checkout@0c366fd6a839edf440554fa01a7085ccba70ac98
         with:
           persist-credentials: false
-      - uses: DeterminateSystems/nix-installer-action@9a59e15a74545c99a626ba594edcd0d02189e670
+      - uses: DeterminateSystems/nix-installer-action@ef8a148080ab6020fd15196c2084a2eea5ff2d25
       - run: nix build
   native:
     runs-on: ubuntu-latest
